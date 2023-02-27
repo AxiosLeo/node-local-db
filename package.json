@@ -1,0 +1,47 @@
+{
+  "name": "@axiosleo/localdb",
+  "version": "0.1.0",
+  "description": "Data storage driver using Node.js and JSON files.",
+  "keywords": [
+    "localdb",
+    "local"
+  ],
+  "main": "./index.js",
+  "author": "AxiosLeo",
+  "scripts": {
+    "lint": "tsc ./index.d.ts && eslint --fix tests/ index.js",
+    "test": "mocha --reporter spec --timeout 3000 tests/*.tests.js",
+    "test-cov": "nyc -r=lcov -r=html -r=text -r=json mocha -t 10000 -R spec tests/*.tests.js",
+    "ci": "npm run lint && npm run test-cov",
+    "clear": "rm -rf ./nyc_output ./coverage"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "@axiosleo/cli-tool": "^1.4.22"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/AxiosLeo/node-cli"
+  },
+  "devDependencies": {
+    "@types/node": "^18.14.2",
+    "chai": "^4.3.7",
+    "chai-as-promised": "^7.1.1",
+    "eslint": "^8.35",
+    "expect.js": "^0.3.1",
+    "has-flag": "^5.0.1",
+    "mm": "^3.2.1",
+    "mocha": "^10.2.0",
+    "mocha-sinon": "^2.1.2",
+    "nyc": "^15.1.0",
+    "pre-commit": "^1.2.2",
+    "sinon": "^15.0.1",
+    "typescript": "^4.9.5"
+  },
+  "pre-commit": {
+    "silent": false,
+    "run": [
+      "lint"
+    ]
+  }
+}
