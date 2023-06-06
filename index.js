@@ -1,24 +1,41 @@
 'use strict';
 
-const { _exists, _write, _remove, _is_dir, _read_json } = require('@axiosleo/cli-tool/src/helper/fs');
+const {
+  _write,
+  _exists,
+  _remove,
+  _is_dir,
+  _read_json
+} = require('@axiosleo/cli-tool/src/helper/fs');
 const path = require('path');
 const fs = require('fs');
 const promisify = require('util').promisify;
 const readdir = promisify(fs.readdir);
 
 /**
- * 
- * @param {*} dir 
- * @param {*} find dir|file
- * @param {*} ext 
+ * @param {string} dir 
+ * @param {string} find dir|file
+ * @param {number} offset
+ * @param {number} limit
  */
-const listDirOrFile = async (dir, find = 'dir') => {
+const listDirOrFile = async (dir, find = 'dir', offset = 0, limit = -1) => {
   if (!await _is_dir(dir)) {
     throw new Error('Only support dir path');
   }
-  const tmp = await readdir(dir);
+  let tmp = await readdir(dir);
   let files = [];
+  let step = 0;
+  let count = 0;
   await Promise.all(tmp.map(async (filename) => {
+    if (step < offset) {
+      step++;
+      return;
+    }
+    step++;
+    if (limit !== -1 && count >= limit) {
+      return;
+    }
+    count++;
     if (find === 'file') {
       const fileext = path.extname(filename);
       if (!fileext.endsWith('.json')) {
@@ -32,6 +49,7 @@ const listDirOrFile = async (dir, find = 'dir') => {
       files.push(filename);
     }
   }));
+  tmp = null;
   return files;
 };
 
@@ -48,7 +66,7 @@ class QueryTable {
 
   async count() {
     const dirpath = path.join(this.root, this.datapath);
-    const rows = await listDirOrFile(dirpath, 'file', '.json');
+    const rows = await listDirOrFile(dirpath, 'file');
     return rows.length;
   }
 
@@ -101,13 +119,7 @@ class QueryTable {
 
   async select(offset = 0, limit = -1) {
     const dirpath = path.join(this.root, this.datapath);
-    let rows = await listDirOrFile(dirpath, 'file', '.json');
-    if (limit !== -1) {
-      rows = rows.slice(offset, offset + limit);
-    } else if (offset !== 0) {
-      rows = rows.slice(offset);
-    }
-    return rows.map(r => r.substring(0, r.length - 5));
+    return await listDirOrFile(dirpath, 'file', offset, limit);
   }
 }
 
