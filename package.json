@@ -1,6 +1,6 @@
 {
   "name": "@axiosleo/localdb",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "Data storage driver using Node.js and JSON files.",
   "keywords": [
     "localdb",
@@ -17,7 +17,7 @@
   },
   "license": "MIT",
   "dependencies": {
-    "@axiosleo/cli-tool": "^1.4.22"
+    "@axiosleo/cli-tool": "^1.5.2"
   },
   "repository": {
     "type": "git",
