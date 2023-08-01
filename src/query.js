@@ -19,8 +19,12 @@ class QueryTable {
 
   async count() {
     const dirpath = path.join(this.root, this.datapath);
-    const rows = await _listDirOrFile(dirpath, 'file');
-    return rows.length;
+    try {
+      const rows = await _listDirOrFile(dirpath, 'file');
+      return rows.length;
+    } catch (err) {
+      return 0;
+    }
   }
 
   async find(uniq) {
