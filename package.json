@@ -21,7 +21,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/AxiosLeo/node-cli"
+    "url": "https://github.com/AxiosLeo/node-local-db"
   },
   "devDependencies": {
     "@types/node": "^18.14.2",
