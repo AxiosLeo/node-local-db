@@ -32,7 +32,7 @@ export declare class QueryTable {
    * upsert many data
    * return failed row
    */
-  upsertMany<T extends Object>(data: T[]): Promise<T[]>;
+  upsertMany<T extends Object>(data: T[], auto_roll_back?: boolean): Promise<T[]>;
 
   /**
    * insert data only if uniq is not exist

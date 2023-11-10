@@ -49,15 +49,35 @@ class QueryTable {
     return await this.insert(uniq, data);
   }
 
-  async upsertMany(rows) {
+  async upsertMany(rows, auto_roll_back = false) {
     let failed = [];
-    await _foreach(rows, async (row) => {
-      if (row._id) {
-        await this.upsert(row._id, row);
-      } else {
-        failed.push(row);
+    let result = [];
+    try {
+      await _foreach(rows, async (row) => {
+        let flag = false;
+        if (row._id) {
+          flag = await this.upsert(row._id, row);
+        }
+        if (flag === false) {
+          if (auto_roll_back) {
+            throw new Error('upsertMany failed');
+          } else {
+            failed.push(row);
+          }
+        } else {
+          result.push(row);
+        }
+      });
+    } catch (err) {
+      // roll back
+      if (auto_roll_back) {
+        await _foreach(result, async (row) => {
+          await this.delete(row._id);
+        });
       }
-    });
+    }
+
+    return failed;
   }
 
   async insert(uniq, data) {
